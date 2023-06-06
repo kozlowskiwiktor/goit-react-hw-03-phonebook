@@ -1,34 +1,29 @@
-import React, { Component } from 'react';
-import { nanoid } from 'nanoid';
+import React from 'react';
 import propTypes from 'prop-types';
 import container from './container.module.css';
 
-export class ContactList extends Component {
-  render() {
-    const { state } = this.props;
+export const ContactList = ({ contacts, onDeleteContact }) => {
+  return (
+    <div className={container}>
+      {contacts.map(({ name, id, number }) => (
+        <p key={id} className={container}>
+          {name} {number}
+          <button type="submit" onClick={() => onDeleteContact(id)}>
+            delete
+          </button>
+        </p>
+      ))}
+    </div>
+  );
+};
 
-    return (
-      <div className={container}>
-        {state.contacts
-          .filter(contact => contact.name.includes(state.filter.toUpperCase()))
-          .map(contact => (
-            <p key={nanoid()} className={container}>
-              {contact.name} {contact.number}
-              <button
-                onClick={() => {
-                  let index = state.contacts.indexOf(contact);
-                  this.setState(state.contacts.splice(index, 1));
-                }}
-                value={contact.name}
-              >
-                delete
-              </button>
-            </p>
-          ))}
-      </div>
-    );
-  }
-}
 ContactList.propTypes = {
-  state: propTypes.object.isRequired,
+  contacts: propTypes.arrayOf(
+    propTypes.shape({
+      id: propTypes.string.isRequired,
+      name: propTypes.string.isRequired,
+      number: propTypes.string.isRequired,
+    })
+  ).isRequired,
+  deleteContact: propTypes.func.isRequired,
 };
